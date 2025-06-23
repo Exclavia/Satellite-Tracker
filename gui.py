@@ -103,3 +103,11 @@ submitbutton.pack(padx=8, pady=5, fill=BOTH)
 # Run the Tkinter event loop
 root.mainloop()
 
+area = tk.Text(root, width=34, height=22, font=("Arial", 12), state=tk.DISABLED)
+text_area.pack(padx=2, pady=10)
+
+submitbutton = tk.Button(root, text="Lookup Satellite", command=buttonClick, font=("Arial", 12))
+submitbutton.pack(padx=8, pady=5, fill=BOTH)
+
+# Run the Tkinter event loop
+root.mainloop()

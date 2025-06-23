@@ -157,3 +157,40 @@ if __name__ == "__main__":
         print(f"Option not found")
     else:
         getSat(selection, latitude=lat, longitude=lon)
+"RiseT": errmsg,
+                    "CulmT": errmsg,
+                    "SetT": errmsg
+                    }
+            satInfo.append(err_dt)
+                    
+            return satInfo
+
+
+if __name__ == "__main__":
+    # CLI options input
+    ulat = input("Input Latitude: ")
+    ulon = input("\nInput Longitude: ")
+    print("")
+    fulldata = []
+    num = 1
+    for sats in satdata:
+        options = {
+            "Opt": num,
+            "Name": sats.get("Name"),
+            "NORAD": sats.get("NORAD")
+            }
+        fulldata.append(options)
+        num = num + 1
+    for x in fulldata:
+        print(f"{x.get('Opt')}. {x.get('Name')}")
+    useroption = input("Please select from the satellite options: ")
+    selection = 0
+    for y in fulldata:
+        if int(y.get("Opt")) == int(useroption):
+            selection = selection + int(y.get("NORAD"))
+        else:
+            continue
+    if selection == 0:
+        print("Option not found")
+    else:
+        getSat(selection, latitude=ulat, longitude=ulon)
