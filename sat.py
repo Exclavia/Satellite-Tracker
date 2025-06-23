@@ -4,11 +4,23 @@ import pytz
 import time
 from data.Sat_Info import importSats
 
+# Imports satinfo.txt
 satdata = importSats()
 
-def getSat(norad_id, latitude, longitude, retry=False, external=False, satData=satdata):
+# Sends request to API
+# Prints response, if CLI, or returns list if GUI
+def getSat(norad_id, latitude, longitude, retry=False, external=False):
+    '''
+    norad_id = Satellite NORAD ID
+    latitude/longitude = Observation location
+    retry = Default: False | For internal recursion use only
+    external = Default: False | Change to True if calling function from outside script.
+    
+    '''
+    # Set function variables
     satInfo = []
-    norad_id = norad_id
+    satData = satdata
+    noid = norad_id
     lat = latitude
     lon = longitude
     passLimit = 1
@@ -19,6 +31,7 @@ def getSat(norad_id, latitude, longitude, retry=False, external=False, satData=s
     "Longitude": f"{lon}"
     }
     satInfo.append(locDict)
+    # Run through imported satellite data, checks data against norad id passed to function, appends matching satellite data to list
     parseList = []
     for inf in satData:
         if int(inf.get("NORAD")) != norad_id:
@@ -31,6 +44,7 @@ def getSat(norad_id, latitude, longitude, retry=False, external=False, satData=s
     
     url = f"https://sat.terrestre.ar/passes/{norad_id}?lat={lat}&lon={lon}&limit={passLimit}"
     
+    # API request
     try:
         time.sleep(1)
         response = requests.get(url, timeout=None)
@@ -38,9 +52,13 @@ def getSat(norad_id, latitude, longitude, retry=False, external=False, satData=s
         if response.status_code == 200:
             satInfo.append(plist)            
             data = response.json()
+            
+            # Separates each part of pass
             rise = data[0].get("rise")
             culm = data[0].get("culmination")
             sett = data[0].get("set")
+            
+            # Gets altitude (elevation)
             riseElev = rise.get("alt")
             maxElev = culm.get("alt")
             setElev = sett.get("alt")
@@ -51,10 +69,11 @@ def getSat(norad_id, latitude, longitude, retry=False, external=False, satData=s
             }
             satInfo.append(elevDict)
             
+            # Get timestamp
             rise_ts = rise.get("utc_timestamp")
             culm_ts = culm.get("utc_timestamp")
             set_ts = sett.get("utc_timestamp")
-            
+            # Format datetime
             dt_rise = datetime.fromtimestamp(rise_ts, tz=local_timezone)
             dt_culm = datetime.fromtimestamp(culm_ts, tz=local_timezone)
             dt_set = datetime.fromtimestamp(set_ts, tz=local_timezone)
@@ -67,6 +86,8 @@ def getSat(norad_id, latitude, longitude, retry=False, external=False, satData=s
             "SetT": setForm
             }
             satInfo.append(datetimeDict)
+            
+            # CLI data display
             if not external:
                 print(f"Next pass for: {plist[1]} ({plist[0]})")
                 print(f"For Lat: {lat}, Lon: {lon}")
@@ -86,11 +107,13 @@ def getSat(norad_id, latitude, longitude, retry=False, external=False, satData=s
                 return satInfo
         
         else:
-            
+            # Call function again if no response, sets retry flag to True. Won't try more than twice.
             if not retry:
                 time.sleep(1)
-                getSat(norad_id, retry=True, external=external)
+                getSat(noid, latitude=lat, longitude=lon, retry=True, external=external)
             else:
+                
+                # Request failures/errors still returns the satInfo list, with the requested data entries replaced with response code/error message.
                 if not external:
                     print(f"Request failed: {response.status_code}")
                 else:
@@ -123,41 +146,6 @@ def getSat(norad_id, latitude, longitude, retry=False, external=False, satData=s
             satInfo.append(err_el)
             err_dt = {
                     "RiseT": errmsg,
-                    "CulmT": errmsg,
-                    "SetT": errmsg
-                    }
-            satInfo.append(err_dt)
-                    
-            return satInfo
-
-if __name__ == "__main__":
-    lat = input("Input Latitude: ")
-    lon = input("\nInput Longitude: ")
-    print("")
-    fulldata = []
-    num = 1
-    for sats in satdata:
-        options = {
-            "Opt": num,
-            "Name": sats.get("Name"),
-            "NORAD": sats.get("NORAD")
-            }
-        fulldata.append(options)
-        num = num + 1
-    for x in fulldata:
-        print(f"{x.get('Opt')}. {x.get('Name')}")
-    useroption = input("Please select from the satellite options: ")
-    selection = 0
-    for y in fulldata:
-        if int(y.get("Opt")) == int(useroption):
-            selection = selection + int(y.get("NORAD"))
-        else:
-            continue
-    if selection == 0:
-        print(f"Option not found")
-    else:
-        getSat(selection, latitude=lat, longitude=lon)
-"RiseT": errmsg,
                     "CulmT": errmsg,
                     "SetT": errmsg
                     }
