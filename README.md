@@ -24,7 +24,7 @@ Satellites currently available are a selection of FM/APRS/CW amateur radio satel
 
 More to be added in future. 
 
-Script can be modified fairly easily to add or remove satellites. Main satellite info file: `data/satinfo.txt` - See [README](https://github.com/Exclavia/Satellite-Tracker/blob/main/data%2FREADME.md)
+Script can be modified fairly easily to add or remove satellites. Main satellite info file: `data/satinfo.txt` - See [Satellite Info Format](https://github.com/Exclavia/Satellite-Tracker/blob/main/data%2FREADME.md)
 
 
 ## External Usage
