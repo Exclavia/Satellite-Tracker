@@ -27,4 +27,15 @@ More to be added in future.
 Script can be modified fairly easily to add or remove satellites. Main satellite info file: `data/satinfo.txt`
 
 
+## External Usage
+Since the script depends on a third-party API, correct or fully updated information cannot be guaranteed currently. This project is still fairly early in development, and plans to either create a maintained API or additions for the ability to self-host the API are being worked on.
 
+To incorporate in your own code you can grab the full repo or just grab the `sat.py` script and `data/` directory and then import the `getSat()` function from the sat.py script. To call the function a few arguments need to be passed to it:
+```
+from sat import getSat
+getSat( norad_id= # NORAD ID of satellite  **Required**
+        latitude= # Latitude of observer   **Required**
+        longitude= # Longitude of observer **Required**
+        retry=False # Self use only, do not change
+        external=False # Change this to True to return a list of the satellite data, otherwise it will operate like the CLI )
+```
