@@ -2,6 +2,8 @@
 
 Python script utilizing third-party hosted Skyfield API: [Sat.Terrestre.ar](https://sat.terrestre.ar/), as of 2025/06/23, that shows the next pass for a selected satellite over a given latitude and longitude.
 
+<img src="https://raw.githubusercontent.com/Exclavia/Satellite-Tracker/refs/heads/main/images/screenshot.png" height="500"/>
+
 Self-hosted API option coming soon.
 
 ## How to use
