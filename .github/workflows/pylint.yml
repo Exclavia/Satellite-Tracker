@@ -13,5 +13,6 @@ jobs:
           gui.py
           data/Sat_Info.py
         python-version: 3.11
+        pylintrc-path: .pylintrc
         
         
