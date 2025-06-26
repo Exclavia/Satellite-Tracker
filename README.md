@@ -1,5 +1,5 @@
 # Satellite tracker script + GUI
-![pylint](https://img.shields.io/badge/PyLint-5.86-orange?logo=python&logoColor=white)
+![pylint](https://img.shields.io/badge/PyLint-7.00-orange?logo=python&logoColor=white)
 
 Python script utilizing third-party hosted Skyfield API: [Sat.Terrestre.ar](https://sat.terrestre.ar/), as of 2025/06/23, that shows the next pass for a selected satellite over a given latitude and longitude.
 
