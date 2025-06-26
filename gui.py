@@ -5,57 +5,60 @@ from tkinter import messagebox
 from tkinter.font import Font
 
 # from ttkbootstrap import Style # Uncomment to use dark theme.
-from data.Sat_Info import importSats
-from sat import getSat
+from data.Sat_Info import import_data
+from sat import get_sat
 
 # Grabbing satellite info from data/satinfo.txt
-satnfo = importSats()
-satOptions = []
+sat_nfo = import_data()
+sat_options = []
 # Adds to list for combo box options
-for thissat in satnfo:
-    this_name = thissat.get("Name")
-    this_norad = thissat.get("NORAD")
+for this_sat in sat_nfo:
+    this_name = this_sat.get("Name")
+    this_norad = this_sat.get("NORAD")
     this_value = f"{this_name}: {this_norad}"
-    satOptions.append(this_value)
+    sat_options.append(this_value)
 
 # Calls getSat function and displays returned data
 def show_selected_item(lati, long):
     selected_item = combo_box.get()
+    i_lat, i_lon = float(lati), float(long)
     if selected_item:
-        satsep = selected_item.replace(" ", "").split(":")
-        satId = int(satsep[1])
+        sat_sep = selected_item.replace(" ", "").split(":")
+        sat_id = int(sat_sep[1])
         # Main sat.py function call - external set to True since it's imported
-        satdata = getSat(satId, latitude=lati, longitude=long, external=True)
+        sat_data = get_sat(sat_id, latitude=i_lat, longitude=i_lon, external=True)
         # Parsing getSat list data into own variables
-        lct = satdata[0]
-        satinfo = satdata[1]
-        elv = satdata[2]
-        ts = satdata[3]
-        sname = satinfo[1]
+        sat_info = sat_data[1]
+        elv_data = sat_data[2]
+        ts_data = sat_data[3]
+        sat_name = sat_sep[0]
         combo_box.set(selected_item)
 
         # Setting variables from getSat
-        lat, lon = lct.get("Latitude"), lct.get("Longitude")
-        rEl, mEl, sEl = elv.get("RiseEl"), elv.get("MaxEl"), elv.get("SetEl")
-        rTs, cTs, sTs = ts.get("RiseT"), ts.get("CulmT"), ts.get("SetT")
-        mode, uLink, dLink, altN = satinfo[2], satinfo[3], satinfo[4], satinfo[5]
+        u_lat, u_lon = i_lat, i_lon
+        r_el, = elv_data.get("RiseE")
+        m_el = elv_data.get("MaxE")
+        s_el = elv_data.get("SetE")
+        r_ts = ts_data.get("RiseT")
+        c_ts = ts_data.get("CulmT")
+        s_ts = ts_data.get("SetT")
+        mode, u_link, d_link = sat_info[2], sat_info[3], sat_info[4]
 
         # Displayed Info ================
-        text_area.insert(tk.INSERT, f"  Name: {sname}")
-        text_area.insert(tk.INSERT, f"\n  Alt. name: {altN}")
-        text_area.insert(tk.INSERT, f"\n  NORAD: {satsep[1]}\n")
+        text_area.insert(tk.INSERT, f"  Name: {sat_name}")
+        text_area.insert(tk.INSERT, f"\n  NORAD: {sat_sep[1]}\n")
         text_area.insert(
             tk.INSERT,
-            f"  Lat: {lat} | Lon: {lon}\n  Up: {uLink} - Down: {dLink}\n  Mode: {mode}\n\n",
+            f"  Lat: {u_lat} | Lon: {u_lon}\n  Up: {u_link} - Down: {d_link}\n  Mode: {mode}\n\n",
         )
         text_area.insert(tk.INSERT, "____________ Next Pass ___________" + "\n\n")
         text_area.insert(
-            tk.INSERT, f" ● Rise\n  | Elevation: {rEl}°\n  | When: {rTs}\n\n"
+            tk.INSERT, f" ● Rise\n  | Elevation: {r_el}°\n  | When: {r_ts}\n\n"
         )
         text_area.insert(
-            tk.INSERT, f" ● Max\n  | Elevation: {mEl}°\n  | When: {cTs}\n\n"
+            tk.INSERT, f" ● Max\n  | Elevation: {m_el}°\n  | When: {c_ts}\n\n"
         )
-        text_area.insert(tk.INSERT, f" ● Set\n  | Elevation: {sEl}°\n  | When: {sTs}")
+        text_area.insert(tk.INSERT, f" ● Set\n  | Elevation: {s_el}°\n  | When: {s_ts}")
         text_area.config(state=tk.DISABLED)
 
 
@@ -69,9 +72,9 @@ def buttonClick():
     else:
         text_area.config(state=tk.NORMAL)
         text_area.delete("1.0", tk.END)
-        lat = lat_entry.get()
-        lon = long_entry.get()
-        show_selected_item(lati=lat, long=lon)
+        e_lat = lat_entry.get()
+        e_lon = long_entry.get()
+        show_selected_item(lati=e_lat, long=e_lon)
 
 
 # Create the main application window
@@ -102,7 +105,7 @@ long_entry.grid(row=1, column=1, padx=8)
 
 # === SATELLITE DROPDOWN ===
 combo_box = ttk.Combobox(
-    root, values=satOptions, width=20, font=("Arial", 18), state="readonly"
+    root, values=sat_options, width=20, font=("Arial", 18), state="readonly"
 )
 combo_box.set("Select a Satellite")
 combo_box.pack(pady=5, padx=8, fill=BOTH)
@@ -115,6 +118,5 @@ submitbutton = tk.Button(
     root, text="Lookup Satellite", command=buttonClick, font=("Arial", 12)
 )
 submitbutton.pack(padx=8, pady=5, fill=BOTH)
-
 # Run the Tkinter event loop
 root.mainloop()
