@@ -25,34 +25,21 @@ def get_sat(norad_id, latitude, longitude, retry=False, external=False):
     pass_limit = 1
     local_tz_name = "America/Detroit"
     local_timezone = pytz.timezone(local_tz_name)
-    location_dict = {"Lat": f"{in_lat}", 
-    "Lon": f"{in_lon}"}
+    location_dict = {"Lat": f"{in_lat}", "Lon": f"{in_lon}"}
     sat_info.append(location_dict)
     # Run through imported satellite data, checks data against norad id passed to function, appends matching satellite data to list
     parse_list = []
     for info in sat_data:
-        if int(info.get("NORAD")) != sat_id:
-            continue
-        else:
-            parse_list.append(
-                [
-                    int(info.get("NORAD")),
-                    info.get("Name"),
-                    info.get("Mode"),
-                    info.get("Uplink"),
-                    info.get("Downlink"),
-                    info.get("AltName"),
-                ]
-            )
+        if int(info.get("NORAD")) != sat_id: continue
+        parse_list.append([int(info.get("NORAD")),
+info.get("Name"), info.get("Mode"),
+info.get("Uplink"), info.get("Downlink")])
     p_list = parse_list[0]
-
     if not retry and not external:
         print(f"\nFetching information on {p_list[1]} ({p_list[0]}) ...\n")
-     
     base = "https://sat.terrestre.ar/passes/"
     api = f"{sat_id}?lat={in_lat}&lon={in_lon}&limit={pass_limit}"
     url = base + api
-
     # API request
     try:
         time.sleep(1)
