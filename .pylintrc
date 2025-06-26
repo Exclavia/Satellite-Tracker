@@ -1,1 +1,9 @@
-disable=unused-import
+[MAIN]
+ignore-patterns=^\.#
+
+[SIMILARITIES]
+ignore-comments=yes
+
+ignore-docstrings=yes
+
+ignore-imports=yes
