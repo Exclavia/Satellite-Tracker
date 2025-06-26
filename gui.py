@@ -1,7 +1,5 @@
-from tkinter import *
 import tkinter as tk
-from tkinter import ttk
-from tkinter import messagebox
+from tkinter import ttk, BOTH, messagebox
 from tkinter.font import Font
 
 # from ttkbootstrap import Style # Uncomment to use dark theme.
@@ -12,11 +10,11 @@ from sat import get_sat
 sat_nfo = import_data()
 sat_options = []
 # Adds to list for combo box options
-for this_sat in sat_nfo:
-    this_name = this_sat.get("Name")
-    this_norad = this_sat.get("NORAD")
-    this_value = f"{this_name}: {this_norad}"
-    sat_options.append(this_value)
+for grab_sat in sat_nfo:
+    name_sat = grab_sat.get("Name")
+    norad_num = grab_sat.get("NORAD")
+    sat_full = f"{name_sat}: {norad_num}"
+    sat_options.append(sat_full)
 
 # Calls getSat function and displays returned data
 def show_selected_item(lati, long):
@@ -63,7 +61,7 @@ def show_selected_item(lati, long):
 
 
 # Button command function
-def buttonClick():
+def button_click():
     # Check if Lat/Lon is entered & if Satellite is selected
     if lat_entry.get() == "" or long_entry.get() == "":
         messagebox.showinfo("Coordinates", "You have to enter coordinates.")
@@ -78,8 +76,8 @@ def buttonClick():
 
 
 # Create the main application window
-root = Tk()
-img = PhotoImage(file="images/icon.png")
+root = tk.Tk()
+img = tk.PhotoImage(file="images/icon.png")
 root.iconphoto(False, img)
 root.title("SatTracker")
 root.resizable(False, False)
@@ -115,7 +113,7 @@ text_area = tk.Text(root, width=34, height=22, font=("Arial", 12), state=tk.DISA
 text_area.pack(padx=2, pady=10)
 
 submitbutton = tk.Button(
-    root, text="Lookup Satellite", command=buttonClick, font=("Arial", 12)
+    root, text="Lookup Satellite", command=button_click, font=("Arial", 12)
 )
 submitbutton.pack(padx=8, pady=5, fill=BOTH)
 # Run the Tkinter event loop
