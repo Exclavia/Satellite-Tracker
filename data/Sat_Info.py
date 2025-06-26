@@ -1,6 +1,6 @@
 import os
 
-def importSats():
+def import_data():
     """Imports Satellite information via the satinfo.txt in the /data directory
     Returns->list [ {
         "Name" : Satellite Name,
@@ -11,40 +11,18 @@ def importSats():
         "AltName" : Alternative satellite name  } ], ...
     """
     data_dir = os.path.dirname(__file__)
-    satInfo = []
+    sat_info = []
     with open(os.path.join(data_dir, "satinfo.txt"), "rt") as info:
-        infolist = info.read().split("\n")
-        for x in infolist:
-            xlist = x.split(";")
-            satDict = {
-                "Name": xlist[0],
-                "NORAD": xlist[1],
-                "Mode": xlist[2],
-                "Uplink": xlist[3],
-                "Downlink": xlist[4],
-                "AltName": xlist[5],
+        info_list = info.read().split("\n")
+        for x in info_list:
+            x_list = x.split(";")
+            sat_dict = {
+                "Name": x_list[0],
+                "NORAD": x_list[1],
+                "Mode": x_list[2],
+                "Uplink": x_list[3],
+                "Downlink": x_list[4],
+                "AltName": x_list[5],
             }
-            satInfo.append(satDict)
-    return satInfo
-
-
-if __name__ == "__main__":
-    plist = []
-    testid = 43017
-    satdata = importSats()
-    for i in satdata:
-        if int(i.get("NORAD")) != testid:
-            continue
-        else:
-            plist.append(
-                [
-                    int(i.get("NORAD")),
-                    i.get("Name"),
-                    i.get("Mode"),
-                    i.get("Uplink"),
-                    i.get("Downlink"),
-                    i.get("AltName"),
-                ]
-            )
-    uplist = plist[0]
-    print(uplist[0], uplist[1])
+            sat_info.append(sat_dict)
+    return sat_info
