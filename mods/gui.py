@@ -78,7 +78,7 @@ def start_gui():
     root.geometry("360x650")
     font = Font(family="Arial", size=20)
     root.option_add("*TCombobox*Listbox*Font", font)
-    style = Style(theme='darkly') # Uncomment to enable dark theme.
+    Style(theme='darkly') # Enables dark theme
 
     # === LAT/LONG/MIN.ELEV ENTRY FIELDS ===
     entry_frame = ttk.Frame(root)
