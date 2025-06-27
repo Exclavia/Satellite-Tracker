@@ -12,38 +12,29 @@ def start_gui():
     sat_import = import_satellites()
     sat_options = []
     # Adds to list for combo box options
-    for info_sat in sat_import:
-        info_name = info_sat.get("Name")
-        info_norad = info_sat.get("NORAD")
-        info_con = f"{info_name}: {info_norad}"
-        sat_options.append(info_con)
+    for nfo in sat_import:
+        sat_options.append(f"{nfo.get('Name')}: {nfo.get('NORAD')}")
 
 
-    def show_selected_item(in_lat, in_lon, min_elev):
+    def show_selected_item(in_lat:float, in_lon:float, min_elev:float):
         """Calls getSat function and displays returned data"""
         selected_item = combo_box.get()
         if selected_item:
             sat_sep = selected_item.replace(" ", "").split(":")
-            sat_id = int(sat_sep[1])
-            sat_data = get_sat(sat_id, usr_lat=in_lat, usr_lon=in_lon, usr_minalt=min_elev)
-            # Parsing getSat list data into own variables
-            sat_name = sat_sep[0]
-            rise_data = sat_data[1]
-            culm_data = sat_data[2]
-            set_data = sat_data[3]
-            more_info = sat_data[4]
+            norad = int(sat_sep[1])
+            name = sat_sep[0]
+            sat_data = get_sat(norad, in_lat, in_lon, min_elev)
             combo_box.set(selected_item)
             # Setting variables from getSat
-            d_lat, d_lon = float(in_lat), float(in_lon)
-            r_el, m_el, s_el = rise_data.get("Elev"), culm_data.get("Elev"), set_data.get("Elev")
-            r_dx, c_dx, s_dx = rise_data.get("Distance"), culm_data.get("Distance"), set_data.get("Distance")
-            r_dt, c_dt, s_dt = rise_data.get("When"), culm_data.get("When"), set_data.get("When")
-            u_link, d_link, mode = more_info.get("Uplink"), more_info.get("Downlink"), more_info.get("Mode")
+            r_el, m_el, s_el = sat_data[1].get("Elev"), sat_data[2].get("Elev"), sat_data[3].get("Elev")
+            r_dx, c_dx, s_dx = sat_data[1].get("Distance"), sat_data[2].get("Distance"), sat_data[3].get("Distance")
+            r_dt, c_dt, s_dt = sat_data[1].get("When"), sat_data[2].get("When"), sat_data[3].get("When")
+            up, down, mode = sat_data[4].get("Uplink"), sat_data[4].get("Downlink"), sat_data[4].get("Mode")
             # Displayed Info ================
-            text_area.insert(tk.INSERT, f"  Name: {sat_name}")
-            text_area.insert(tk.INSERT, f"\n  NORAD: {sat_id}\n")
-            text_area.insert(tk.INSERT, f"  Lat: {d_lat} | Lon: {d_lon}\n")
-            text_area.insert(tk.INSERT, f"  Up: {u_link}  |  Down: {d_link}\n")
+            text_area.insert(tk.INSERT, f"  Name: {name}")
+            text_area.insert(tk.INSERT, f"\n  NORAD: {norad}\n")
+            text_area.insert(tk.INSERT, f"  Lat: {in_lat} | Lon: {in_lon}\n")
+            text_area.insert(tk.INSERT, f"  Up: {up}  |  Down: {down}\n")
             text_area.insert(tk.INSERT, f"  Mode: {mode}\n")
             text_area.insert(tk.INSERT, "____________ Next Pass ___________" + "\n\n")
             text_area.insert(tk.INSERT, f" ● Rise\n  | Elevation: {r_el}\n  | Distance: {r_dx}\n  | When: {r_dt}\n\n")
@@ -64,9 +55,9 @@ def start_gui():
         else:
             text_area.config(state=tk.NORMAL)
             text_area.delete('1.0', tk.END)
-            e_lat = lat_entry.get()
-            e_lon = long_entry.get()
-            e_ele = elev_entry.get()
+            e_lat = float(lat_entry.get())
+            e_lon = float(long_entry.get())
+            e_ele = float(elev_entry.get())
             show_selected_item(in_lat=e_lat, in_lon=e_lon, min_elev=e_ele)
 
     # Create the main application window

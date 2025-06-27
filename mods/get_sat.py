@@ -6,9 +6,8 @@ import pytz
 from mods.import_sat import import_satellites
 from mods.get_keps import get_keps
 
-
 # Function loads local keps file, reads it, calculates, returns in list/dict
-def get_sat(norad_id, usr_lat, usr_lon, usr_minalt):
+def get_sat(norad_id:int, usr_lat:float, usr_lon:float, usr_minalt:float):
     """get_sat(norad_id: int -> NORAD ID,
                usr_lat: float -> Latitude,
                usr_lon: float -> Longitude,
@@ -17,11 +16,6 @@ def get_sat(norad_id, usr_lat, usr_lon, usr_minalt):
     file_path = get_keps(sat_group='amateur', file_format='csv')
     with load.open(file_path, mode='r') as f:
         data = list(csv.DictReader(f))
-    # Converting function inputs
-    sat_id = int(norad_id)
-    lat_float = float(usr_lat)
-    lon_float = float(usr_lon)
-    min_alt = float(usr_minalt)
     # Setting Timescale/Datetime/Timezone
     t_s = load.timescale()
     local_tz = pytz.timezone('America/Detroit')
@@ -32,13 +26,13 @@ def get_sat(norad_id, usr_lat, usr_lon, usr_minalt):
     # Parsing Keps and returning easily callable data.
     earth_sats = [EarthSatellite.from_omm(t_s, fields) for fields in data]
     by_number = {sat.model.satnum: sat for sat in earth_sats}
-    main_satellite = by_number[sat_id]
-    my_pos = wgs84.latlon(lat_float, lon_float)
+    main_satellite = by_number[norad_id]
+    my_pos = wgs84.latlon(usr_lat, usr_lon)
     # Using parsed kep-data to make a few lists to allow easier access to the information.
     sat_data = []
     sat_info = []
     for sat in earth_sats:
-        if sat.model.satnum == sat_id:
+        if sat.model.satnum == norad_id:
             sat_info.append(sat.name)
         sat_dict = {
             "Name": sat.name,
@@ -46,7 +40,7 @@ def get_sat(norad_id, usr_lat, usr_lon, usr_minalt):
             }
         sat_data.append(sat_dict)
     # Finding events using the two set timescales (Current time + 24hours)
-    t, sat_events = main_satellite.find_events(my_pos, t0, t1, altitude_degrees=min_alt)
+    t, sat_events = main_satellite.find_events(my_pos, t0, t1, altitude_degrees=usr_minalt)
     event_names = 'Rises', 'Culminates', 'Sets'
     pass_limit = 1
     format_str = "%b %d, %Y at %I:%M:%S %p"
@@ -74,7 +68,7 @@ def get_sat(norad_id, usr_lat, usr_lon, usr_minalt):
     # Scans through satinfo.txt, finds inputted NORAD, returns additional information
     # Uplink frequency, Downlink frequency, Transmitter mode.
     for more in sat_import:
-        if int(more.get("NORAD")) != sat_id: continue
+        if int(more.get("NORAD")) != norad_id: continue
         more_dict = {
             "Uplink": more.get("Uplink"),
             "Downlink": more.get("Downlink"),
