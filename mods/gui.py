@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, messagebox, BOTH, PhotoImage
-from ttkbootstrap import Style # Uncomment to use dark theme.
 from tkinter.font import Font
+from ttkbootstrap import Style
 from mods.get_sat import get_sat
 from mods.import_sat import import_satellites
 
