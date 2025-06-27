@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk, messagebox, BOTH, PhotoImage
-#from ttkbootstrap import Style # Uncomment to use dark theme.
+from ttkbootstrap import Style # Uncomment to use dark theme.
 from tkinter.font import Font
 from mods.get_sat import get_sat
 from mods.import_sat import import_satellites
@@ -75,10 +75,10 @@ def start_gui():
     root.iconphoto(False, img)
     root.title("Satellite Tracker")
     root.resizable(False, False)
-    root.geometry("360x640")
+    root.geometry("360x650")
     font = Font(family="Arial", size=20)
     root.option_add("*TCombobox*Listbox*Font", font)
-    #style = Style(theme='darkly') # Uncomment to enable dark theme.
+    style = Style(theme='darkly') # Uncomment to enable dark theme.
 
     # === LAT/LONG/MIN.ELEV ENTRY FIELDS ===
     entry_frame = ttk.Frame(root)
@@ -106,7 +106,7 @@ def start_gui():
     combo_box.pack(pady=5, padx=8, fill=BOTH)
 
     # === OUTPUT TEXT BOX ===
-    text_area = tk.Text(root, width=36, height=24, font=("Arial", 12), state=tk.DISABLED)
+    text_area = tk.Text(root, width=36, height=22, font=("Arial", 12), state=tk.DISABLED)
     text_area.pack(padx=2, pady=10)
     submitbutton = tk.Button(root, text="Lookup Satellite", command=button_click, font=("Arial", 12))
     submitbutton.pack(padx=8, pady=5, fill=BOTH)
