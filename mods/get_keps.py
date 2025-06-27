@@ -4,6 +4,9 @@ from skyfield.api import load
 # Downloads Keplarian(Keps) Elements from Celestrak, only if file hasn't been download yet
 # + only if previous file is more than max_days old (default 7.0)
 def get_keps(sat_group:str, file_format:str, max_days=7.0):
+    """get_keps(sat_group: str -> Satellite group,
+               file_format: str -> Format of the downloaded data,
+               max_days: float -> Maximum amount of days before redownloading file (Default: 7.0)"""
     data_dir = "data\\keps"
     s_group = sat_group
     kep_format = file_format
@@ -18,6 +21,6 @@ def get_keps(sat_group:str, file_format:str, max_days=7.0):
         if not load.exists(file_path) or load.days_old(file_path) >= m_days:
             load.download(url, filename=file_path)
         return file_path
-    else:
-        print(f"{data_dir} does not exist.")
-        return None
+
+    print(f"{data_dir} does not exist.")
+    return None

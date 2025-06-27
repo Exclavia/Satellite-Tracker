@@ -12,7 +12,7 @@ Returns->list [ {
     """
     data_dir = "data\\"
     sat_info = []
-    with open(os.path.join(data_dir,'satinfo.txt'), "rt") as info:
+    with open(os.path.join(data_dir,'satinfo.txt'), "rt", encoding="utf-8") as info:
         info_list = info.read().split("\n")
         for nfo in info_list:
             nfo_list = nfo.split(";")

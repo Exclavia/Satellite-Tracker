@@ -6,8 +6,8 @@ from mods.get_sat import get_sat
 from mods.import_sat import import_satellites
 
 
-# Main GUI function
 def start_gui():
+    """Main GUI function"""
     # Grabbing satellite info from data/satinfo.txt
     sat_import = import_satellites()
     sat_options = []
@@ -18,8 +18,9 @@ def start_gui():
         info_con = f"{info_name}: {info_norad}"
         sat_options.append(info_con)
 
-    # Calls getSat function and displays returned data
+
     def show_selected_item(in_lat, in_lon, min_elev):
+        """Calls getSat function and displays returned data"""
         selected_item = combo_box.get()
         if selected_item:
             sat_sep = selected_item.replace(" ", "").split(":")
@@ -31,7 +32,7 @@ def start_gui():
             culm_data = sat_data[2]
             set_data = sat_data[3]
             more_info = sat_data[4]
-            combo_box.set(selected_item)           
+            combo_box.set(selected_item)
             # Setting variables from getSat
             d_lat, d_lon = float(in_lat), float(in_lon)
             r_el, m_el, s_el = rise_data.get("Elev"), culm_data.get("Elev"), set_data.get("Elev")
@@ -50,8 +51,9 @@ def start_gui():
             text_area.insert(tk.INSERT, f" ● Set\n  | Elevation: {s_el}\n  | Distance: {s_dx}\n  | When: {s_dt}")
             text_area.config(state=tk.DISABLED)
 
-    # Button command function 
+
     def button_click():
+        """Button command function"""
         # Check if Lat/Lon is entered & if Satellite is selected
         if lat_entry.get() == "" or long_entry.get() == "":
             messagebox.showinfo("Coordinates", "You have to enter coordinates.")

@@ -1,8 +1,7 @@
-import os
 import csv
 import time
 from datetime import datetime
-from skyfield.api import EarthSatellite, wgs84, load, utc
+from skyfield.api import EarthSatellite, wgs84, load
 import pytz
 from mods.import_sat import import_satellites
 from mods.get_keps import get_keps
@@ -10,6 +9,10 @@ from mods.get_keps import get_keps
 
 # Function loads local keps file, reads it, calculates, returns in list/dict
 def get_sat(norad_id, usr_lat, usr_lon, usr_minalt):
+    """get_sat(norad_id: int -> NORAD ID,
+               usr_lat: float -> Latitude,
+               usr_lon: float -> Longitude,
+               usr_minalt: float -> Minimum elevation/altitude"""
     sat_import = import_satellites()
     file_path = get_keps(sat_group='amateur', file_format='csv')
     with load.open(file_path, mode='r') as f:
@@ -54,7 +57,6 @@ def get_sat(norad_id, usr_lat, usr_lon, usr_minalt):
         event_name = event_names[event]
         utc_datetime = t_i.astimezone(local_tz)
         format_datetime = utc_datetime.strftime(format_str)
-        geocentric = main_satellite.at(t_i)
         pos_diff = main_satellite - my_pos
         topocentric = pos_diff.at(t_i)
         alt_el, _, sat_dx = topocentric.altaz()
@@ -67,8 +69,7 @@ def get_sat(norad_id, usr_lat, usr_lon, usr_minalt):
             "Distance": f"{dx_format}mi"
         }
         sat_info.append(pass_dict)
-        if pass_limit == 3:
-            break
+        if pass_limit == 3: break
         pass_limit = pass_limit + 1
     # Scans through satinfo.txt, finds inputted NORAD, returns additional information
     # Uplink frequency, Downlink frequency, Transmitter mode.
