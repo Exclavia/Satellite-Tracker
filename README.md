@@ -23,5 +23,3 @@ There are still more plans to be able to hopefully grab this information and be 
 Originally it was more setup as either CLI or GUI, but I pivoted the program more to the GUI, you can still call the get_sats() function, but rather than any built-in console printlines, all the information is just returned in list/dicts.
 See the `gui.py` file to see how to implement it yourself, it's fairly straight forward at the moment.
 
-## Additional
-Also messing around with the idea of compiling the full program (Currently on Windows) All related files and tests will be commited to the [Win-comp](https://github.com/Exclavia/Satellite-Tracker/tree/win-compile) branch.
