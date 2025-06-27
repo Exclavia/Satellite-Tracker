@@ -1,8 +1,8 @@
-import csv
-import time
-from datetime import datetime
+from csv import DictReader
+from time import time
+from datetime import datetime as dt
 from skyfield.api import EarthSatellite, wgs84, load
-import pytz
+from pytz import timezone as py_tz
 from mods.import_sat import import_satellites
 from mods.get_keps import get_keps
 
@@ -15,19 +15,18 @@ def get_sat(norad_id:int, usr_lat:float, usr_lon:float, usr_minalt:float):
     sat_import = import_satellites()
     file_path = get_keps(sat_group='amateur', file_format='csv')
     with load.open(file_path, mode='r') as f:
-        data = list(csv.DictReader(f))
+        data = list(DictReader(f))
     # Setting Timescale/Datetime/Timezone
-    t_s = load.timescale()
-    local_tz = pytz.timezone('America/Detroit')
-    epoch_now = time.time()
-    epoch_then = epoch_now + 86400.00
-    t0 = t_s.from_datetime(datetime.fromtimestamp(epoch_now, tz=local_tz))
-    t1 = t_s.from_datetime(datetime.fromtimestamp(epoch_then, tz=local_tz))
+    ts = load.timescale()
+    l_tz = py_tz('America/Detroit')
+    t0 = ts.from_datetime(dt.fromtimestamp(time(), tz=l_tz))
+    ep_24 = time() + 86400.00
+    t1 = ts.from_datetime(dt.fromtimestamp(ep_24, tz=l_tz))
     # Parsing Keps and returning easily callable data.
-    earth_sats = [EarthSatellite.from_omm(t_s, fields) for fields in data]
+    earth_sats = [EarthSatellite.from_omm(ts, fields) for fields in data]
     by_number = {sat.model.satnum: sat for sat in earth_sats}
-    main_satellite = by_number[norad_id]
-    my_pos = wgs84.latlon(usr_lat, usr_lon)
+    main_sat = by_number[norad_id]
+    pos = wgs84.latlon(usr_lat, usr_lon)
     # Using parsed kep-data to make a few lists to allow easier access to the information.
     sat_data = []
     sat_info = []
@@ -40,27 +39,24 @@ def get_sat(norad_id:int, usr_lat:float, usr_lon:float, usr_minalt:float):
             }
         sat_data.append(sat_dict)
     # Finding events using the two set timescales (Current time + 24hours)
-    t, sat_events = main_satellite.find_events(my_pos, t0, t1, altitude_degrees=usr_minalt)
+    t, sat_events = main_sat.find_events(pos, t0, t1, altitude_degrees=usr_minalt)
     event_names = 'Rises', 'Culminates', 'Sets'
     pass_limit = 1
     format_str = "%b %d, %Y at %I:%M:%S %p"
     # For loop to loop through data and grab only what we want based on pass_limit
     # Default: Next pass that rises above set min. elevation
     # Returns Rise/Max/Set elevation, datetime and satellite distance (in miles)
-    for t_i, event in zip(t, sat_events):
-        event_name = event_names[event]
-        utc_datetime = t_i.astimezone(local_tz)
-        format_datetime = utc_datetime.strftime(format_str)
-        pos_diff = main_satellite - my_pos
-        topocentric = pos_diff.at(t_i)
-        alt_el, _, sat_dx = topocentric.altaz()
-        km_mile = float(sat_dx.km) * 0.621371
-        dx_format = str(km_mile)[:6]
+    for ti, event in zip(t, sat_events):
+        utc_datetime = ti.astimezone(l_tz)
+        dt_fm = utc_datetime.strftime(format_str)
+        pos_diff = main_sat - pos
+        alt, _, dx = pos_diff.at(ti).altaz()
+        km_mile = float(dx.km) * 0.621371
         pass_dict = {
-            "Event": f"{event_name}",
-            "When": f"{format_datetime}",
-            "Elev": f"{str(alt_el)[:2]}°",
-            "Distance": f"{dx_format}mi"
+            "Event": f"{event_names[event]}",
+            "When": f"{dt_fm}",
+            "Elev": f"{str(alt)[:2]}°",
+            "Distance": f"{str(km_mile)[:6]}mi"
         }
         sat_info.append(pass_dict)
         if pass_limit == 3: break
