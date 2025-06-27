@@ -9,9 +9,11 @@ jobs:
     - uses: Silleellie/pylint-github-action@v2.1
       with:
         lint-path: |
-          sat.py
-          gui.py
-          data/Sat_Info.py
+          main.py
+          mods/gui.py
+          mods/get_sat.py
+          mods/import_sat.py
+          mods/get_keps.py
         python-version: 3.11
         pylintrc-path: .pylintrc
         
