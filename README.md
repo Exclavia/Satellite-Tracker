@@ -1,5 +1,5 @@
 # Satellite tracker
-![pylint](https://img.shields.io/badge/PyLint-10.00-brightgreen?logo=python&logoColor=whitehttps://img.shields.io/badge/PyLint-10.00-brightgreen?logo=python&logoColor=white)
+![pylint](https://img.shields.io/badge/PyLint-10.00-brightgreen?logo=python&logoColor=white)
 
 Simple satellite tracker with a GUI that shows the next pass for a selected satellite over a given longitude and latitude based on minimum elevation.
 
