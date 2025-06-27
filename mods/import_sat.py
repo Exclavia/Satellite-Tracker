@@ -10,7 +10,7 @@ Returns->list [ {
     "Downlink" : Downlink Frequency,
     "Mode" : Transmitter Mode  } ], ...
     """
-    data_dir = "data\\"
+    data_dir = os.path.join('.', 'data')
     sat_info = []
     with open(os.path.join(data_dir,'satinfo.txt'), "rt", encoding="utf-8") as info:
         info_list = info.read().split("\n")
