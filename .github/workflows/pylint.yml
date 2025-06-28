@@ -10,10 +10,7 @@ jobs:
       with:
         lint-path: |
           main.py
-          mods/gui.py
-          mods/get_sat.py
-          mods/import_sat.py
-          mods/get_keps.py
+          mods
         python-version: 3.11
         pylintrc-path: .pylintrc
         
